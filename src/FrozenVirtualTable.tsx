@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useRef, useState, useEffect } from "react";
-import { VariableSizeGrid as Grid } from "react-window";
+import { VariableSizeGrid as Grid, VariableSizeGrid } from "react-window";
 
 const COLUMN_WIDTH = 110;
 const ROW_HEIGHT = 40;
@@ -10,9 +10,9 @@ const COLUMN_COUNT = 50;
 
 const FrozenVirtualTable: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mainGridRef = useRef<any>(null);
-  const leftGridRef = useRef<any>(null);
-  const rightGridRef = useRef<any>(null);
+  const mainGridRef = useRef<VariableSizeGrid | null>(null);
+  const leftGridRef = useRef<VariableSizeGrid | null>(null);
+  const rightGridRef = useRef<VariableSizeGrid | null>(null);
 
   const [gridWidth, setGridWidth] = useState(800);
   const [gridHeight, setGridHeight] = useState(600);
@@ -35,10 +35,18 @@ const FrozenVirtualTable: React.FC = () => {
     rightGridRef.current?.scrollTo({ scrollTop });
   };
 
-  const getColumnWidth = (index: number) => COLUMN_WIDTH;
-  const getRowHeight = (index: number) => ROW_HEIGHT;
+  const getColumnWidth = () => COLUMN_WIDTH;
+  const getRowHeight = () => ROW_HEIGHT;
 
-  const Cell = ({ columnIndex, rowIndex, style }: any) => {
+  const Cell = ({
+    columnIndex,
+    rowIndex,
+    style,
+  }: {
+    columnIndex: number;
+    rowIndex: number;
+    style: React.CSSProperties;
+  }) => {
     const isFrozenLeft = columnIndex < 2;
     const isFrozenRight = columnIndex >= COLUMN_COUNT - 2;
     const className = `cell ${isFrozenLeft ? "frozen-left" : ""} ${
